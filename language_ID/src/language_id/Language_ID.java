@@ -18,7 +18,11 @@ public class Language_ID
     {
         // TODO code application logic here
         Probabilities p = new Probabilities();
-        p.getEnglish();
-        
+        p.readTexts();
+
+        p.determineLanguage("Hello my name is Greg");
+        p.determineLanguage("Bonjour je m'appalle Greg");
+        p.determineLanguage("Dziendobry nazywam sie Greg");
+
     }
 }
