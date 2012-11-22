@@ -5,8 +5,11 @@
 package language_id;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,51 +21,83 @@ import java.util.logging.Logger;
 public class Probabilities
 {
 
-    int countEnglish[] = new int[26];
+    final int LETTERS = 26;
+    final float SMOOTH = 0.5f;
+    float countSequenceEnglish[][] = new float[LETTERS][LETTERS];
+    float countSequenceFrench[][] = new float[LETTERS][LETTERS];
+    float countSequencePolish[][] = new float[LETTERS][LETTERS];
+    float countSequenceEnglishProb[][] = new float[LETTERS][LETTERS];
+    float countSequenceFrenchProb[][] = new float[LETTERS][LETTERS];
+    float countSequencePolishProb[][] = new float[LETTERS][LETTERS];
 
     Probabilities()
     {
+        for (int i = 0; i < 26; i++)
+        {
+            for (int j = 0; j < 26; j++)
+            {
+                countSequenceEnglish[i][j] = SMOOTH;
+                countSequenceFrench[i][j] = SMOOTH;
+                countSequencePolish[i][j] = SMOOTH;
+
+                countSequenceEnglishProb[i][j] = 0;
+                countSequenceFrenchProb[i][j] = 0;
+                countSequencePolishProb[i][j] = 0;
+            }
+        }
     }
 
-    public void getEnglish(int choice)
+    public void getEnglish()
     {
-        BufferedReader br = null;
+        BufferedReader engligh = null;
+        BufferedReader french = null;
+        BufferedReader polish = null;
         try
         {
-            switch (choice)
-            {
-                case 1:
-                    br = new BufferedReader(new FileReader("english.txt"));
-                    break;
-                case 2:
-                    br = new BufferedReader(new FileReader("french.txt"));
-                    break;
-                default:
-                    br = new BufferedReader(new FileReader("polish.txt"));
-                    break;
-            }
 
+            engligh = new BufferedReader(new FileReader("english.txt"));
+            french = new BufferedReader(new FileReader("french.txt"));
+            polish = new BufferedReader(new FileReader("polish.txt"));
 
-            StringBuilder sb = new StringBuilder();
-            String line = br.readLine();
-
+            String line = engligh.readLine();
+            String englishText = "";
             while (line != null)
             {
                 line = line.toLowerCase();
-                //System.out.println(line);
-                getCount(line);
-                line = br.readLine();
+                // Append the next line and remove everything except letters a-z
+                englishText += line.replaceAll("[^A-Za-z]+", "");
+                line = engligh.readLine();
             }
-            char toDispay = 'a';
-            int total = 0;
-            for (int i = 0; i < countEnglish.length; i++)
+            
+            analyzeEnglishText(englishText);
+
+            for (int i = 0; i < LETTERS; i++)
             {
-                System.out.println("" + toDispay + " " + countEnglish[i]);
-                toDispay++;
-                total += countEnglish[i];
+                for (int j = 0; j < LETTERS; j++)
+                {
+                    System.out.print(countSequenceEnglish[i][j] + " ");
+                }
+                System.out.print("\n");
             }
 
-            System.out.println("Total number of letters: " + total);
+            //finding probabilities
+            for (int i = 0; i < LETTERS; i++)
+            {
+                for (int j = 0; j < LETTERS; j++)
+                {
+                    countSequenceEnglishProb[i][j] = countSequenceEnglish[i][j] / (englishText.length() - 1 + LETTERS * LETTERS);
+                }
+            }
+            
+            for (int i = 0; i < LETTERS; i++)
+            {
+                for (int j = 0; j < LETTERS; j++)
+                {
+                    System.out.print(countSequenceEnglishProb[i][j] + " ");
+                }
+                System.out.print("\n");
+            }
+
 
         }
         catch (FileNotFoundException ex)
@@ -77,7 +112,7 @@ public class Probabilities
         {
             try
             {
-                br.close();
+                engligh.close();
             }
             catch (IOException ex)
             {
@@ -86,28 +121,30 @@ public class Probabilities
         }
     }
 
-    private void getCount(String line)
+    private void analyzeEnglishText(String text)
     {
-        char letter = 'a';
-        for (int i = 0; i < 26; i++)
+        for (int i = 1; i < text.length(); i++)
         {
-            int counter = countOccurrences(line, letter);
-            //System.out.println(""+letter+" count"+ counter);
-            countEnglish[i] += counter;
-            letter++;
+            countSequenceEnglish[text.charAt(i) - 97][text.charAt(i - 1) - 97]++;
+            //System.out.println(text.charAt(i) + " " + text.charAt(i - 1) + " " + (text.charAt(i) - 97) + " " + (text.charAt(i - 1) - 97));
         }
     }
 
-    private int countOccurrences(String line, char letter)
+    private void analyzeFrenchText(String text)
     {
-        int count = 0;
-        for (int i = 0; i < line.length(); i++)
+        for (int i = 1; i < text.length(); i++)
         {
-            if (line.charAt(i) == letter)
-            {
-                count++;
-            }
+            countSequenceFrench[text.charAt(i) - 97][text.charAt(i - 1) - 97]++;
+            //System.out.println(text.charAt(i) + " " + text.charAt(i - 1) + " " + (text.charAt(i) - 97) + " " + (text.charAt(i - 1) - 97));
         }
-        return count;
+    }
+
+    private void analyzePolishText(String text)
+    {
+        for (int i = 1; i < text.length(); i++)
+        {
+            countSequencePolish[text.charAt(i) - 97][text.charAt(i - 1) - 97]++;
+            //System.out.println(text.charAt(i) + " " + text.charAt(i - 1) + " " + (text.charAt(i) - 97) + " " + (text.charAt(i - 1) - 97));
+        }
     }
 }

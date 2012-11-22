@@ -18,7 +18,7 @@ public class Language_ID
     {
         // TODO code application logic here
         Probabilities p = new Probabilities();
-        p.getEnglish(3);
+        p.getEnglish();
         
     }
 }
