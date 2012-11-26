@@ -21,24 +21,35 @@ public class Language_ID
         // TODO code application logic here
         Probabilities p = new Probabilities();
 
-        p.determineLanguage("Hello, my name is Greg");
-        p.determineLanguage("Hello, my name is Grzegorz");
-        p.determineLanguage("Bonjour, je m'appalle Grzegorz");
-        p.determineLanguage("Dziendobry, nazywam sie Grzegorz");
+        /**
+         * Good classification
+         */
         p.determineLanguage("Where are Jim and Julia?");
         p.determineLanguage("Ils reviendront au final, peut-etre.");
-        p.determineLanguage("Grzegorz went to see the zebra at the zoo");
-        p.determineLanguage("pojechalem do afryki");
-        
+        p.determineLanguage("Hello, my name is Greg");
+        p.determineLanguage("Bonjour, je m'appalle Grzegorz");
+        p.determineLanguage("Dziendobry, nazywam sie Grzegorz");
+
+        /**
+         * Wrong classification
+         */
+        System.out.println("--------------------------");
+        p.determineLanguage("Hello, my name is Grzegorz");
+        p.determineLanguage("Tonny went to see a zebra at the zoo");
+        p.determineLanguage("Novembre a ete chaud");
+        p.determineLanguage("Your country house in Joliette");
+        p.determineLanguage("The film mission impossible was good");
+        System.out.println("--------------------------");
+
         Scanner scanner = new Scanner(System.in);
 
         System.out.print("Enter a sentence:\n");
         String sentence = scanner.nextLine();
-        while(!sentence.isEmpty())
+        while (!sentence.isEmpty())
         {
             p.determineLanguage(sentence);
             sentence = scanner.nextLine();
         }
-        
+
     }
 }
