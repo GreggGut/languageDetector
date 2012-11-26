@@ -18,14 +18,14 @@ import java.util.logging.Logger;
 public class Probabilities
 {
 
-    final int LETTERS = 26;
-    final float SMOOTH = 0.5f;
-    float countSequenceEnglish[][] = new float[LETTERS][LETTERS];
-    float countSequenceFrench[][] = new float[LETTERS][LETTERS];
-    float countSequencePolish[][] = new float[LETTERS][LETTERS];
-    float countSequenceEnglishProb[][] = new float[LETTERS][LETTERS];
-    float countSequenceFrenchProb[][] = new float[LETTERS][LETTERS];
-    float countSequencePolishProb[][] = new float[LETTERS][LETTERS];
+    private final int LETTERS = 26;
+    private final float SMOOTH = 0.5f;
+    private float countSequenceEnglish[][] = new float[LETTERS][LETTERS];
+    private float countSequenceFrench[][] = new float[LETTERS][LETTERS];
+    private float countSequencePolish[][] = new float[LETTERS][LETTERS];
+    private float countSequenceEnglishProb[][] = new float[LETTERS][LETTERS];
+    private float countSequenceFrenchProb[][] = new float[LETTERS][LETTERS];
+    private float countSequencePolishProb[][] = new float[LETTERS][LETTERS];
 
     Probabilities()
     {
@@ -42,9 +42,11 @@ public class Probabilities
                 countSequencePolishProb[i][j] = 0;
             }
         }
+
+        readTexts();
     }
 
-    public void readTexts()
+    private void readTexts()
     {
         BufferedReader engligh = null;
         BufferedReader french = null;
@@ -67,8 +69,6 @@ public class Probabilities
             }
 
             analyzeEnglishText(englishText);
-
-
 
             String lineFrench = french.readLine();
             String frenchText = "";
@@ -131,10 +131,10 @@ public class Probabilities
         {
             for (int j = 0; j < LETTERS; j++)
             {
-                countSequenceEnglishProb[i][j] = countSequenceEnglish[i][j] / (text.length() - 1 + LETTERS * LETTERS);
+                countSequenceEnglishProb[i][j] = countSequenceEnglish[i][j] / (text.length() - 1 + SMOOTH * LETTERS * LETTERS);
             }
         }
-
+        
 //        displayProb(countSequenceEnglish);
 //        displayProb(countSequenceEnglishProb);
     }
@@ -151,10 +151,10 @@ public class Probabilities
         {
             for (int j = 0; j < LETTERS; j++)
             {
-                countSequenceFrenchProb[i][j] = countSequenceFrench[i][j] / (text.length() - 1 + LETTERS * LETTERS);
+                countSequenceFrenchProb[i][j] = countSequenceFrench[i][j] / (text.length() - 1 + SMOOTH * LETTERS * LETTERS);
             }
         }
-        
+
 //        displayProb(countSequenceFrench);
 //        displayProb(countSequenceFrenchProb);
 
@@ -172,7 +172,7 @@ public class Probabilities
         {
             for (int j = 0; j < LETTERS; j++)
             {
-                countSequencePolishProb[i][j] = countSequencePolish[i][j] / (text.length() - 1 + LETTERS * LETTERS);
+                countSequencePolishProb[i][j] = countSequencePolish[i][j] / (text.length() - 1 + SMOOTH * LETTERS * LETTERS);
             }
         }
 
@@ -208,6 +208,9 @@ public class Probabilities
             french += Math.log10(countSequenceFrenchProb[sentence.charAt(i) - 97][sentence.charAt(i - 1) - 97]);
             polish += Math.log10(countSequencePolishProb[sentence.charAt(i) - 97][sentence.charAt(i - 1) - 97]);
         }
+
+        //System.out.println("English: " + english + " French: " + french + " Polish: " + polish);
+
         if (english > french)
         {
             if (english > polish)
