@@ -48,24 +48,24 @@ public class Probabilities
 
     private void readTexts()
     {
-        BufferedReader engligh = null;
+        BufferedReader english = null;
         BufferedReader french = null;
         BufferedReader polish = null;
         try
         {
 
-            engligh = new BufferedReader(new FileReader("english.txt"));
+            english = new BufferedReader(new FileReader("english.txt"));
             french = new BufferedReader(new FileReader("french.txt"));
             polish = new BufferedReader(new FileReader("polish.txt"));
 
-            String lineEnglish = engligh.readLine();
+            String lineEnglish = english.readLine();
             String englishText = "";
             while (lineEnglish != null)
             {
                 lineEnglish = lineEnglish.toLowerCase();
                 // Append the next line and remove everything except letters a-z
                 englishText += lineEnglish.replaceAll("[^A-Za-z]+", "");
-                lineEnglish = engligh.readLine();
+                lineEnglish = english.readLine();
             }
 
             analyzeEnglishText(englishText);
@@ -98,7 +98,8 @@ public class Probabilities
         }
         catch (FileNotFoundException ex)
         {
-            Logger.getLogger(Probabilities.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(Probabilities.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Cannot open " + ex.getLocalizedMessage()+ ", exiting...");
         }
         catch (IOException ex)
         {
@@ -108,13 +109,26 @@ public class Probabilities
         {
             try
             {
-                engligh.close();
-                polish.close();
-                french.close();
+                if (english != null)
+                {
+                    english.close();
+                }
+                if (polish != null)
+                {
+                    polish.close();
+                }
+                if (french != null)
+                {
+                    french.close();
+                }
+                if (english == null || french == null || polish == null)
+                {
+                    System.exit(0);
+                }
             }
             catch (IOException ex)
             {
-                Logger.getLogger(Probabilities.class.getName()).log(Level.SEVERE, null, ex);
+                //Logger.getLogger(Probabilities.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
