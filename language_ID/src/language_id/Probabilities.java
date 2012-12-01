@@ -19,7 +19,7 @@ public class Probabilities
 {
 
     private final int LETTERS = 26;
-    private final float SMOOTH = 0.01f;
+    private final float SMOOTH = 0.5f;
     private float countSequenceEnglish[][] = new float[LETTERS][LETTERS];
     private float countSequenceFrench[][] = new float[LETTERS][LETTERS];
     private float countSequencePolish[][] = new float[LETTERS][LETTERS];

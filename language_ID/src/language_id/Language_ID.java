@@ -35,10 +35,10 @@ public class Language_ID
          */
         System.out.println("--------------------------");
         p.determineLanguage("Hello, my name is Grzegorz");
-        p.determineLanguage("Tonny went to see a zebra at the zoo");
+        p.determineLanguage("Grzegorz went to see a zebra at the zoo");
         p.determineLanguage("Novembre a ete chaud");
         p.determineLanguage("Your country house in Joliette");
-        p.determineLanguage("The film mission impossible was good");
+        p.determineLanguage("I am cold");
         System.out.println("--------------------------");
 
         Scanner scanner = new Scanner(System.in);
