@@ -26,6 +26,7 @@ public class Probabilities
     private float countSequenceEnglishProb[][] = new float[LETTERS][LETTERS];
     private float countSequenceFrenchProb[][] = new float[LETTERS][LETTERS];
     private float countSequencePolishProb[][] = new float[LETTERS][LETTERS];
+    private boolean trace = false;
 
     Probabilities()
     {
@@ -99,7 +100,7 @@ public class Probabilities
         catch (FileNotFoundException ex)
         {
             //Logger.getLogger(Probabilities.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println("Cannot open " + ex.getLocalizedMessage()+ ", exiting...");
+            System.out.println("Cannot open " + ex.getLocalizedMessage() + ", exiting...");
         }
         catch (IOException ex)
         {
@@ -140,17 +141,28 @@ public class Probabilities
         {
             countSequenceEnglish[text.charAt(i) - 97][text.charAt(i - 1) - 97]++;
         }
-        //finding probabilities english
+
         for (int i = 0; i < LETTERS; i++)
         {
+            float count = 0;
+
+            //Count the number of givens in each row
             for (int j = 0; j < LETTERS; j++)
             {
-                countSequenceEnglishProb[i][j] = countSequenceEnglish[i][j] / (text.length() - 1 + SMOOTH * LETTERS * LETTERS);
+                count += countSequenceEnglish[i][j];
+            }
+            //Compute the probabilities
+            for (int j = 0; j < LETTERS; j++)
+            {
+                countSequenceEnglishProb[i][j] = countSequenceEnglish[i][j] / count;
             }
         }
-
-//        displayProb(countSequenceEnglish);
-//        displayProb(countSequenceEnglishProb);
+        if (trace)
+        {
+            System.out.println("\nEnglish bigram probabilities: ");
+            //displayProb(countSequenceEnglish);
+            displayProb(countSequenceEnglishProb);
+        }
     }
 
     private void analyzeFrenchText(String text)
@@ -160,17 +172,29 @@ public class Probabilities
         {
             countSequenceFrench[text.charAt(i) - 97][text.charAt(i - 1) - 97]++;
         }
-        //finding probabilities french
+
         for (int i = 0; i < LETTERS; i++)
         {
+            float count = 0;
+            //Count the number of givens in each row
             for (int j = 0; j < LETTERS; j++)
             {
-                countSequenceFrenchProb[i][j] = countSequenceFrench[i][j] / (text.length() - 1 + SMOOTH * LETTERS * LETTERS);
+                count += countSequenceFrench[i][j];
+            }
+
+            //Compute the probabilities
+            for (int j = 0; j < LETTERS; j++)
+            {
+                countSequenceFrenchProb[i][j] = countSequenceFrench[i][j] / count;
             }
         }
 
-//        displayProb(countSequenceFrench);
-//        displayProb(countSequenceFrenchProb);
+        if (trace)
+        {
+            System.out.println("\nFrench bigram probabilities: ");
+            //displayProb(countSequenceFrench);
+            displayProb(countSequenceFrenchProb);
+        }
 
     }
 
@@ -181,17 +205,30 @@ public class Probabilities
         {
             countSequencePolish[text.charAt(i) - 97][text.charAt(i - 1) - 97]++;
         }
-        //finding probabilities polish
+
         for (int i = 0; i < LETTERS; i++)
         {
+            float count = 0;
+
+            //Count the number of givens in each row            
             for (int j = 0; j < LETTERS; j++)
             {
-                countSequencePolishProb[i][j] = countSequencePolish[i][j] / (text.length() - 1 + SMOOTH * LETTERS * LETTERS);
+                count += countSequencePolish[i][j];
+            }
+
+            //Compute the probabilities
+            for (int j = 0; j < LETTERS; j++)
+            {
+                countSequencePolishProb[i][j] = countSequencePolish[i][j] / count;
             }
         }
 
-//        displayProb(countSequencePolish);
-//        displayProb(countSequencePolishProb);
+        if (trace)
+        {
+            System.out.println("\nPolish bigram probabilities: ");
+            //displayProb(countSequencePolish);
+            displayProb(countSequencePolishProb);
+        }
     }
 
     /**
@@ -201,13 +238,18 @@ public class Probabilities
      */
     private void displayProb(float prob[][])
     {
+        int newline = 0;
         for (int i = 0; i < LETTERS; i++)
         {
             for (int j = 0; j < LETTERS; j++)
             {
-                System.out.print(prob[i][j] + " ");
+                System.out.print("" + (char) (i + 97) + (char) (j + 97) + ": " + prob[i][j] + " ");
+                if ((++newline) % 5 == 0)
+                {
+                    System.out.println();
+                }
             }
-            System.out.print("\n");
+            //System.out.print("\n");
         }
     }
 
@@ -231,6 +273,19 @@ public class Probabilities
             english += Math.log10(countSequenceEnglishProb[sentence.charAt(i) - 97][sentence.charAt(i - 1) - 97]);
             french += Math.log10(countSequenceFrenchProb[sentence.charAt(i) - 97][sentence.charAt(i - 1) - 97]);
             polish += Math.log10(countSequencePolishProb[sentence.charAt(i) - 97][sentence.charAt(i - 1) - 97]);
+
+            if (trace)
+            {
+                System.out.println();
+                System.out.println("BIGRAM: " + sentence.charAt(i) + sentence.charAt(i - 1));
+                System.out.print("English:  P(" + sentence.charAt(i) + "|" + sentence.charAt(i - 1) + ") = " + countSequenceEnglishProb[sentence.charAt(i) - 97][sentence.charAt(i - 1) - 97]);
+                System.out.println(" ==> log prob of sequence so far: " + english);
+                System.out.print("French: P(" + sentence.charAt(i) + "|" + sentence.charAt(i - 1) + ") = " + countSequenceFrenchProb[sentence.charAt(i) - 97][sentence.charAt(i - 1) - 97]);
+                System.out.println(" ==> log prob of sequence so far: " + french);
+                System.out.print("Polish:  P(" + sentence.charAt(i) + "|" + sentence.charAt(i - 1) + ") = " + countSequencePolishProb[sentence.charAt(i) - 97][sentence.charAt(i - 1) - 97]);
+                System.out.println(" ==> log prob of sequence so far: " + polish);
+            }
+
         }
 
         //System.out.println("English: " + english + " French: " + french + " Polish: " + polish);
